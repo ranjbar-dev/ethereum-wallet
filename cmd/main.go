@@ -24,15 +24,10 @@ func crawl() {
 		Http: "https://goerli.infura.io/v3/89aae5ec52f9450ebe4fc58cbb8138fd",
 		Ws:   "wss://goerli.infura.io/ws/v3/89aae5ec52f9450ebe4fc58cbb8138fd",
 	}
-	var validPrivateKey = "a24031202755246def61140ae1bce297d0c4886b2faea5ce79001748ef97e8ec"
+	var validPrivateKey = "88414dbb373a211bc157265a267f3de6a4cec210f3a5da12e89630f2c447ad27"
 	w, _ := ethereumWallet.CreateEthereumWallet(node, validPrivateKey)
 
-	c := ethereumWallet.Crawler{
-		Node:      node,
-		Addresses: []string{w.Address},
-	}
-
-	fmt.Println(c.ScanBlocksFromTo(7921152, 7921154))
+	fmt.Println(w.Transfer("0x4d496ccc28058b1d74b7a19541663e21154f9c84", big.NewInt(1000000)))
 }
 
 func transfer() {
