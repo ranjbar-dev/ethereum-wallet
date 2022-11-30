@@ -60,10 +60,10 @@ func (c *Crawler) ScanBlocks(count int) ([]CrawlResult, error) {
 	blockNumber := block.Number().Int64()
 
 	for i := count; i > 0; i-- {
-		wg.Add(1)
-		blockNumber = blockNumber - 1
 		// sleep to avoid 503 error
 		time.Sleep(100 * time.Millisecond)
+		blockNumber = blockNumber - 1
+		wg.Add(1)
 		go c.getBlockData(&wg, client, block, &allTransactions, blockNumber)
 	}
 
@@ -93,9 +93,9 @@ func (c *Crawler) ScanBlocksFromTo(from int, to int) ([]CrawlResult, error) {
 	}
 
 	for i := to; i > from; i-- {
-		wg.Add(1)
 		// sleep to avoid 503 error
 		time.Sleep(100 * time.Millisecond)
+		wg.Add(1)
 		go c.getBlockData(&wg, client, block, &allTransactions, int64(i))
 	}
 
