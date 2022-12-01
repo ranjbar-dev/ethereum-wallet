@@ -8,7 +8,6 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/params"
 	"github.com/ranjbar-dev/ethereum-wallet/geth"
 	"math/big"
 )
@@ -29,8 +28,16 @@ func createTransactionInput(node Node, fromAddressHex string, toAddressHex strin
 	}
 
 	gasLimit := uint64(21000)
-	gasFeeCap := big.NewInt(10 * params.GWei)
-	gasTipCap := big.NewInt(10 * params.GWei)
+
+	gasFeeCap, err := client.SuggestGasPrice(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	gasTipCap, err := client.SuggestGasTipCap(context.Background())
+	if err != nil {
+		return nil, err
+	}
 
 	chainID, err := client.NetworkID(context.Background())
 	if err != nil {

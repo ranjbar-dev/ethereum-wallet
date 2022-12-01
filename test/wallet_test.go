@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	EthereumWallet "github.com/ranjbar-dev/ethereum-wallet"
 	"testing"
 )
@@ -104,6 +105,7 @@ func TestTransfer(t *testing.T) {
 	//}
 
 	txId, err := w.Transfer(validToAddress, ethAmount)
+	fmt.Println(txId)
 	if err != nil {
 		t.Errorf("Transfer error was incorect, got: %q, want: %q.", err, "nil")
 	}
@@ -124,6 +126,7 @@ func TestTransferTRC20(t *testing.T) {
 	//}
 
 	txId, err := w.TransferERC20(_t, validToAddress, erc20Amount)
+	fmt.Println(txId)
 	if err != nil {
 		t.Errorf("Transfer error was incorect, got: %q, want: %q.", err, "nil")
 	}

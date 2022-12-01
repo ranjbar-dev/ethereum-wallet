@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	ethereumWallet "github.com/ranjbar-dev/ethereum-wallet"
 	"github.com/ranjbar-dev/ethereum-wallet/enums"
+	"github.com/ranjbar-dev/ethereum-wallet/geth"
 	"math/big"
 )
 
@@ -16,7 +18,8 @@ const toAddress = "0x75c07e7207Bb00Cf60c77f2506D7CE2B8d18bf0f"
 
 func main() {
 
-	crawl()
+	c, _ := geth.GetGETHClient("https://goerli.infura.io/v3/89aae5ec52f9450ebe4fc58cbb8138fd")
+	fmt.Println(c.SuggestGasTipCap(context.Background()))
 }
 
 func crawl() {
