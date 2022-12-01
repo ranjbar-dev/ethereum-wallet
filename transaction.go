@@ -78,8 +78,6 @@ func broadcastTransaction(node Node, transaction *types.Transaction) (string, er
 		return "", err
 	}
 
-	fmt.Println(transaction)
-
 	return transaction.Hash().Hex(), nil
 }
 
