@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"fmt"
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -27,7 +28,12 @@ func createTransactionInput(node Node, fromAddressHex string, toAddressHex strin
 		return nil, err
 	}
 
-	gasLimit := uint64(21000)
+	gasLimit, err := client.EstimateGas(context.Background(), ethereum.CallMsg{
+		To: &toAddress,
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	gasFeeCap, err := client.SuggestGasPrice(context.Background())
 	if err != nil {
@@ -88,7 +94,7 @@ func broadcastTransaction(node Node, transaction *types.Transaction) (string, er
 	return transaction.Hash().Hex(), nil
 }
 
-func createERC20Transaction(c *ethclient.Client, ew *EthereumWallet) (*bind.TransactOpts, error) {
+func createERC20Transaction(node Node, toAddressHex string, c *ethclient.Client, ew *EthereumWallet) (*bind.TransactOpts, error) {
 
 	privateRCDSA, err := ew.PrivateKeyRCDSA()
 	if err != nil {
@@ -108,9 +114,27 @@ func createERC20Transaction(c *ethclient.Client, ew *EthereumWallet) (*bind.Tran
 
 	signer := types.LatestSignerForChainID(chainID)
 
+	gasFeeCap, err := c.SuggestGasPrice(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	gasTipCap, err := c.SuggestGasTipCap(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	gasLimit, err := erc20GasLimit(node, toAddressHex)
+	if err != nil {
+		return nil, err
+	}
+
 	return &bind.TransactOpts{
-		From:  fromAddress,
-		Nonce: big.NewInt(int64(n)),
+		From:      fromAddress,
+		Nonce:     big.NewInt(int64(n)),
+		GasLimit:  gasLimit,
+		GasFeeCap: gasFeeCap,
+		GasTipCap: gasTipCap,
 		Signer: func(addr common.Address, localTx *types.Transaction) (*types.Transaction, error) {
 			return types.SignTx(localTx, signer, privateRCDSA)
 		},

@@ -180,6 +180,11 @@ func (ew *EthereumWallet) Transfer(toAddressHex string, amountInWei *big.Int) (s
 	return txId, nil
 }
 
+func (ew *EthereumWallet) EstimateTransferFee(toAddressHex string) (int64, error) {
+
+	return estimateEthTransactionFee(ew.Node, toAddressHex)
+}
+
 func (ew *EthereumWallet) TransferERC20(t *Token, toAddressHex string, amountInTokenSubAmount *big.Int) (string, error) {
 
 	c, err := geth.GetGETHClient(ew.Node.Http)
@@ -194,7 +199,7 @@ func (ew *EthereumWallet) TransferERC20(t *Token, toAddressHex string, amountInT
 		return "", err
 	}
 
-	txInput, err := createERC20Transaction(c, ew)
+	txInput, err := createERC20Transaction(ew.Node, toAddressHex, c, ew)
 	if err != nil {
 		return "", err
 	}
@@ -205,4 +210,9 @@ func (ew *EthereumWallet) TransferERC20(t *Token, toAddressHex string, amountInT
 	}
 
 	return tx.Hash().Hex(), nil
+}
+
+func (ew *EthereumWallet) EstimateTransferERC20Fee(t *Token, toAddressHex string) (int64, error) {
+
+	return estimateErc20TransactionFee(ew.Node, toAddressHex)
 }
