@@ -81,6 +81,19 @@ Example
 * // 
 	
 ```
+
+Estimate transfer eth fee
+```
+feeInWei,err := w.EstimateTransferFee("tb1q0r23g66m9rhhak8aahsg53wfp5egt2huuc4tnu")
+feeInWei // int64
+```
+
+Estimate transfer erc20 fee
+```
+feeInWei,err := w.EstimateTransferERC20Fee(token)
+feeInWei // int64
+```
+
 - transfer ETH from wallet
 ```
 txId, err := w.Transfer(toAddressHex, amount)
