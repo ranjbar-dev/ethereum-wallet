@@ -212,7 +212,7 @@ func (ew *EthereumWallet) TransferERC20(t *Token, toAddressHex string, amountInT
 	return tx.Hash().Hex(), nil
 }
 
-func (ew *EthereumWallet) EstimateTransferERC20Fee(t *Token, toAddressHex string) (int64, error) {
+func (ew *EthereumWallet) EstimateTransferERC20Fee(t *Token) (int64, error) {
 
-	return estimateErc20TransactionFee(ew.Node, toAddressHex)
+	return estimateErc20TransactionFee(ew.Node)
 }

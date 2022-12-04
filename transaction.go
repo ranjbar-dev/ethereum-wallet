@@ -124,10 +124,7 @@ func createERC20Transaction(node Node, toAddressHex string, c *ethclient.Client,
 		return nil, err
 	}
 
-	gasLimit, err := erc20GasLimit(node, toAddressHex)
-	if err != nil {
-		return nil, err
-	}
+	gasLimit := uint64(70000)
 
 	return &bind.TransactOpts{
 		From:      fromAddress,
